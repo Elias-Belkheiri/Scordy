@@ -1,14 +1,18 @@
 import { useState } from 'react'
+import { useContext } from 'react'
+import { NavbarContext } from '../contexts/navbarContext'
 import '../output.css'
 import logo from '../assets/logo.png'
 
-function Server(props)
+function Server(props: any)
 {
+  const context = useContext(NavbarContext);
+  const isClicked = context.clickedIcon === props.name;
   const [isHoverd, setIsHoverd] = useState(false)
 
   return <div className='server flex flex-row items-center gap-2 relative'>
-    <div onClick={props.setClicked(props.name)} className={`${props.isClicked ? 'h-[40px]' : 'h-[8px]'} w-[4px] bg-white rounded-r-[4px] ${isHoverd ? 'h-[40px]' : 'h-[8px]'} fixed left-0 ease-in-out duration-300`}></div>
-    <img onMouseEnter={() => setIsHoverd(true)} onMouseLeave={() => setIsHoverd(false)} id={props.name} className={`cursor-pointer w-[48px] ${isHoverd ? 'rounded-[13px]' : 'rounded-[50%]'} ease-in-out duration-300`} src={logo} alt="name" />
+    <div className={`${(isClicked || isHoverd) ? 'h-[40px]' : 'h-[8px]'} w-[4px] bg-white rounded-r-[4px] fixed left-0 ease-in-out duration-300`}></div>
+    <img onClick={() => context.setClickedIcon(props.name)} onMouseEnter={() => setIsHoverd(true)} onMouseLeave={() => setIsHoverd(false)} id={props.name} className={`cursor-pointer w-[48px] ${isClicked || isHoverd ? 'rounded-[13px]' : 'rounded-[50%]'} ease-in-out duration-300`} src={logo} alt="name" />
   </div>
 }
 

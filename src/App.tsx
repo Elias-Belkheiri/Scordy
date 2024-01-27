@@ -1,12 +1,16 @@
 import { Server, AddServer, DiscoverServers } from './components/servers'
-import { useState } from 'react'
+import { NavbarContext } from './contexts/navbarContext'
+import { useContext, useState } from 'react'
 import logo from './assets/logo.png'
 import './output.css'
 
-function DirectMessages (props) {
-  return <div onClick={props.setClicked("directMessage")} className='directMessage flex flex-row items-center gap-2 relative'>
-    <div className={`${props.isClicked ? 'h-[40px]' : 'h-[8px]'} w-[4px] bg-white rounded-r-[4px] fixed left-0`}></div>
-    <img className='cursor-pointer rounded-[13px] w-[48px]' src={logo} alt="lol" />
+function DirectMessages () {
+  const [isHoverd, setIsHoverd] = useState(false)
+  const context = useContext(NavbarContext);
+  const isClicked = context.clickedIcon === "directMessage";
+  return <div className='directMessage flex flex-row items-center gap-2 relative'>
+    <div className={`${(isClicked || isHoverd) ? 'h-[40px]' : 'h-[8px]'} w-[4px] bg-white rounded-r-[4px] fixed left-0 ease-in-out duration-300`}></div>
+    <img onClick={() => context.setClickedIcon("directMessage")} onMouseEnter={() => setIsHoverd(true)} onMouseLeave={() => setIsHoverd(false)} className={`cursor-pointer ${isClicked || isHoverd ? 'rounded-[13px]' : 'rounded-[50%]'} w-[48px] ease-in-out duration-300`} src={logo} alt="lol" />
   </div>
 }
 
@@ -25,16 +29,20 @@ const LineSeparator = () => {
 };
 
 function App() {
-  const [clicked, setClicked] = useState("directMessage");
-  return <nav className='flex flex-col items-center gap-3 pt-4 h-screen w-[70px] bg-[#202225]'>
-    <DirectMessages onClick={(str: string) => setClicked(str)} isClicked={clicked === "directMessage"} setClicked={(str: string) => setClicked(str)}/>
-    <LineSeparator />
-    <Server name={"Freda"} isClicked={clicked === "Freda"} setClicked={(str: string) => setClicked(str)}/>
-    <Server name={"Hmeda"} isClicked={clicked === "Hmeda"} setClicked={(str: string) => setClicked(str)}/>
-    <AddServer />
-    <DiscoverServers />
-  </nav>
-
+  const [clickedIcon, setClickedIcon] = useState('directMessage')
+  return (
+    <NavbarContext.Provider value={{clickedIcon, setClickedIcon}}>
+      <nav className='flex flex-col items-center gap-3 pt-4 h-screen w-[70px] bg-[#202225]'>
+      <DirectMessages />
+      <LineSeparator />
+      <Server name={"Freda"}/>
+      <Server name={"Khadija"}/>
+      {/* <Server name={"Hmeda"} isClicked={clicked === "Hmeda"} setClicked={(str: string) => setClicked(str)}/> */}
+      <AddServer />
+      <DiscoverServers />
+    </nav>
+    </NavbarContext.Provider>
+  )
 }
 
 export default App

@@ -1,0 +1,6 @@
+import { createContext } from 'react';
+
+export const NavbarContext = createContext({
+  clickedIcon: '',
+  setClickedIcon: (str: string) => {},
+});
