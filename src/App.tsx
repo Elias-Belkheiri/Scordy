@@ -37,9 +37,8 @@ function App() {
       <LineSeparator />
       <Server name={"Freda"}/>
       <Server name={"Khadija"}/>
-      {/* <Server name={"Hmeda"} isClicked={clicked === "Hmeda"} setClicked={(str: string) => setClicked(str)}/> */}
-      <AddServer />
-      <DiscoverServers />
+      <AddServer name={"addServer"}/>
+      <DiscoverServers name={"discover"}/>
     </nav>
     </NavbarContext.Provider>
   )
