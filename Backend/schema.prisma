@@ -1,0 +1,58 @@
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model Server {
+    id       Int        @id @unique @default(autoincrement())
+    name     String     @unique
+    // channels Channel[]
+    users    User[]
+}
+
+model User {
+    id          Int       @id @default(autoincrement())
+    fullName    String    @unique
+    username    String    @unique
+    email       String    @unique
+    password    String
+    avatar      String
+    servers     Server[]
+
+    friended    Friends[] @relation("FrienderRelation")
+    friendedBy  Friends[] @relation("FriendedRelation")
+}
+
+model Friends {
+  frienderId   Int
+  friendedId   Int
+
+  friender     User @relation("FrienderRelation", fields: [frienderId], references: [id])
+  friended     User @relation("FriendedRelation", fields: [friendedId], references: [id])
+
+  @@id([frienderId, friendedId])
+}
+
+// model Channel {
+//     id          Int     @id @unique @default(autoincrement())
+//     name        String
+//     messages    Message[]
+//     Members     User[]
+//     private     Boolean
+// }
+
+// model Message {
+//     id          Int     @id @unique @default(autoincrement())
+//     message     String
+//     sender      User
+//     date        DateTime
+// }
+
+// model DmChannel {
+//     messages    Message[]
+//     users       User[]
+// }

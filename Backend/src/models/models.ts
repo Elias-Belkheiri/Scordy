@@ -27,7 +27,7 @@ Message {
     Date    date;
 }
 
-UsersDMs {
+DmChannel {
     Message[]   messages;
     User[]      users;
 }
