@@ -1,8 +1,7 @@
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
 generator client {
     provider = "prisma-client-js"
 }
@@ -10,6 +9,7 @@ generator client {
 model Server {
     id       Int        @id @unique @default(autoincrement())
     name     String     @unique
+    // moderators  User[]
     // channels Channel[]
     users    User[]
 }
@@ -17,11 +17,11 @@ model Server {
 model User {
     id          Int       @id @default(autoincrement())
     fullName    String    @unique
-    username    String    @unique
+    userName    String    @unique
     email       String    @unique
     password    String
-    avatar      String
-    servers     Server[]
+    avatar      String?
+    servers     Server[]  
 
     friended    Friends[] @relation("FrienderRelation")
     friendedBy  Friends[] @relation("FriendedRelation")

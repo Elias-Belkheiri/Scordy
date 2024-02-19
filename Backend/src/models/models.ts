@@ -1,49 +1,25 @@
-interface Server {
-    id: number;
-    name: string;
+import {Prisma, PrismaClient} from '@prisma/client'
+import {User, Server} from '../interfaces'
+import {BadRequest} from '../customExceptions'
+
+const prisma = new PrismaClient();
+
+export const addUser = async (user: User) =>
+{
+    if (!user.fullName || !user.email || !user.userName || !user.password)
+        throw new BadRequest(`Invalid User Credentials`);
+    try
+    {
+        const   userCreated = await prisma.user.create({data: user});
+        return  userCreated;
+    }
+    catch (exc)
+    {
+        if (exc instanceof Prisma.PrismaClientValidationError)
+            throw new BadRequest(`User validation failed`);
+        if (exc instanceof Prisma.PrismaClientKnownRequestError)
+            throw new BadRequest(`Invalid User: ${exc.meta?.target}`);
+        else
+            throw new BadRequest(`Invalid User`);
+    }
 }
-
-let servers: Server[] = [{id: 1, name: 'Server1'}, {id: 2, name: 'Server2'}];
-
-export {servers};
-
-/*
-
-Server {
-    Channel[]   channels;
-    User[]      members;
-    User[]      blockedUsers;
-}
-
-Channel {
-    Message[]  messages;
-    User[]      members;
-    bool        private;
-}
-
-Message {
-    String  message;
-    User    sender;
-    Date    date;
-}
-
-DmChannel {
-    Message[]   messages;
-    User[]      users;
-}
-
-User {
-    String fullName;
-    String username;
-    String email;
-    Server servers;
-
-    /// Relations
-    User   friends;
-    User   pendingUsers;
-    User   blockedUsers;
-}
-
-/* To enter a server you need an Invitation Link;
-
-*/
