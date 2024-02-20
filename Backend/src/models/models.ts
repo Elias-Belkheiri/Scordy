@@ -54,8 +54,6 @@ export const updateUser = async (user: User, userName: string) =>
     {
         if (exc instanceof Prisma.PrismaClientValidationError)
             throw new BadRequest(`User validation failed`);
-        if (exc instanceof Prisma.PrismaClientKnownRequestError)
-            throw new BadRequest(`Invalid User: ${exc.meta?.target} already exists`);
         else
             throw new BadRequest(`Invalid User`);
     }

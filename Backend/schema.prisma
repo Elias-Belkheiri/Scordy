@@ -2,57 +2,71 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
+}
+
+enum ChannelTypes {
+  PRIVATE
+  PUBLIC
+  DM
 }
 
 model Server {
-    id       Int        @id @unique @default(autoincrement())
-    name     String     @unique
-    // moderators  User[]
-    // channels Channel[]
-    users    User[]
+  id         Int       @id @unique @default(autoincrement())
+  name       String    @unique
+  channels   Channel[]
+  moderators User[]    @relation("Moderators")
+  members    User[]    @relation("Members")
 }
 
 model User {
-    id          Int       @id @default(autoincrement())
-    fullName    String    @unique
-    userName    String    @unique
-    email       String    @unique
-    password    String
-    avatar      String?
-    servers     Server[]  
+  id              Int       @id @default(autoincrement())
+  fullName        String    @unique
+  userName        String    @unique
+  email           String    @unique
+  password        String
+  avatar          String?
+  servers         Server[]  @relation("Members")
+  moderator       Server[]  @relation("Moderators")
+  privateChannels Channel[]
+  messages        Message[]
 
-    friended    Friends[] @relation("FrienderRelation")
-    friendedBy  Friends[] @relation("FriendedRelation")
+  friended   Friends[] @relation("FrienderRelation")
+  friendedBy Friends[] @relation("FriendedRelation")
 }
 
 model Friends {
-  frienderId   Int
-  friendedId   Int
+  frienderId Int
+  friendedId Int
 
-  friender     User @relation("FrienderRelation", fields: [frienderId], references: [id])
-  friended     User @relation("FriendedRelation", fields: [friendedId], references: [id])
+  friender User @relation("FrienderRelation", fields: [frienderId], references: [id])
+  friended User @relation("FriendedRelation", fields: [friendedId], references: [id])
 
   @@id([frienderId, friendedId])
 }
 
-// model Channel {
-//     id          Int     @id @unique @default(autoincrement())
-//     name        String
-//     messages    Message[]
-//     Members     User[]
-//     private     Boolean
-// }
+model Channel {
+  id       Int          @id @unique @default(autoincrement())
+  name     String?
+  type     ChannelTypes
+  server   Server?      @relation(fields: [serverId], references: [id])
+  messages Message[]
 
-// model Message {
-//     id          Int     @id @unique @default(autoincrement())
-//     message     String
-//     sender      User
-//     date        DateTime
-// }
+  privateMembers User[]
 
-// model DmChannel {
-//     messages    Message[]
-//     users       User[]
-// }
+  serverId Int
+}
+
+model Message {
+  id      Int      @id @unique @default(autoincrement())
+  message String
+  date    DateTime
+
+  sender  User     @relation(fields: [userId], references: [id])
+  Channel Channel  @relation(fields: [channelId], references: [id])
+
+  userId    Int
+  channelId Int
+}
