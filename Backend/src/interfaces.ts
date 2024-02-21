@@ -27,8 +27,8 @@ export interface Message {
 export interface Channel {
     id              :number
     name            :string
-    type            :string
+    type            :"PUBLIC" | "PRIVATE" | "DM"
     messages        :Message[]
-    server          :Server
-    privateMembers  :User[]
+    server          :string
+    privateMembers  :string[]
 }
