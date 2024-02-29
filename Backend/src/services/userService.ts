@@ -1,5 +1,5 @@
 import {Prisma, PrismaClient} from '@prisma/client'
-import {User, Server} from '../interfaces'
+import {User, Server} from '../dtos'
 import {BadRequest} from '../customExceptions'
 
 const prisma = new PrismaClient();
@@ -7,12 +7,13 @@ const prisma = new PrismaClient();
 
 export const getUsers = async () =>
 {
-    return await prisma.user.findMany();
+    const users =  await prisma.user.findMany();
+    return users.map(user => ({...user, password: undefined}));
 }
 
 export const addUser = async (user: User) =>
 {
-    if (!user.fullName || !user.email || !user.userName || !user.password)
+    if (!user.firstName || !user.lastName || !user.email || !user.userName || !user.password)
         throw new BadRequest(`Invalid User Credentials`);
     try
     {
@@ -35,7 +36,7 @@ export const getUser = async (userName: string) =>
     try
     {
         const user = await prisma.user.findUnique({where: {userName}});
-        return user;
+        return {...user, password: undefined};
     }
     catch (exc)
     {
@@ -48,7 +49,7 @@ export const updateUser = async (user: User, userName: string) =>
     try
     {
         const   userUpdated = await prisma.user.update({where: {userName}, data: user});
-        return  userUpdated;
+        return  {...userUpdated, password: undefined};
     }
     catch (exc)
     {
@@ -64,7 +65,7 @@ export const deleteUser = async (userName: string) =>
     try
     {
         const   userDeleted = await prisma.user.delete({where: {userName}});
-        return  userDeleted;
+        return  {...userDeleted, password: undefined};
     }
     catch (exc)
     {

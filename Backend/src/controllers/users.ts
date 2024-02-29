@@ -1,6 +1,6 @@
 import express from 'express';
 import {BadRequest} from '../customExceptions'
-import * as User from '../models/models'
+import * as User from '../services/userService'
 
 const router = express.Router();
 
