@@ -1,4 +1,4 @@
-import {User, Server, Message, Channel} from '../interfaces';
+import {User, Server, Message, Channel} from '../dtos';
 import {BadRequest} from '../customExceptions'
 import {Prisma, PrismaClient} from '@prisma/client'
 

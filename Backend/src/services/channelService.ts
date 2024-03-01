@@ -1,5 +1,5 @@
 import {Prisma, PrismaClient} from '@prisma/client'
-import {User, Server, Channel} from '../interfaces'
+import {User, Server, Channel} from '../dtos'
 import {BadRequest} from '../customExceptions'
 
 const prisma = new PrismaClient();
