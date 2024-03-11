@@ -22,7 +22,7 @@ export  const addServer = async (server: Server) => {
 export const getServers = async () => {
     try
     {
-        const servers = await prisma.server.findMany();
+        const servers = await prisma.server.findMany({include: {channels: true}});
         return servers;
     }
     catch (e)
@@ -34,7 +34,7 @@ export const getServers = async () => {
 export const getServer = async (name: string) => {
     try
     {
-        const server = await prisma.server.findUnique({where: {name}});
+        const server = await prisma.server.findUnique({where: {name}, include: {channels: true}});
         return server;
     }
     catch (e)

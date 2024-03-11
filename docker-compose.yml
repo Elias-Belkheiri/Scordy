@@ -3,16 +3,14 @@ services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_DB: "exampledb"
-      POSTGRES_USER: "exampleuser"
-      POSTGRES_PASSWORD: "examplepass"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    env_file: ./Backend/.env
     restart: always
 
-      
 volumes:
   postgres_data:

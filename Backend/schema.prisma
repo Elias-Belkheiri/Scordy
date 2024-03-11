@@ -31,7 +31,7 @@ model User {
   avatar          String?
   servers         Server[]  @relation("Members")
   moderator       Server[]  @relation("Moderators")
-  privateChannels Channel[]
+  privateChannels Channel[] @relation("PrivateChannels")
   messages        Message[]
 
   friended   Friends[] @relation("FrienderRelation")
@@ -50,12 +50,12 @@ model Friends {
 
 model Channel {
   id       Int          @id @unique @default(autoincrement())
-  name     String?
+  name     String       
   type     ChannelTypes
   server   Server?      @relation(fields: [serverId], references: [id])
   messages Message[]
 
-  privateMembers User[]
+  privateMembers User[] @relation("PrivateChannels")
 
   serverId Int
 }
@@ -71,3 +71,10 @@ model Message {
   userId    Int
   channelId Int
 }
+
+// {
+// type: 'DM', 'Server Channel'
+// channelName: name
+// receiverName: name
+// msg: msg
+// }

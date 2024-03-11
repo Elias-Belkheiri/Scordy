@@ -17,6 +17,15 @@ export interface Server {
     members         :User[] | any
 }
 
+export interface Channel {
+    id              :number
+    name            :string
+    type            :"PUBLIC" | "PRIVATE" | "DM"
+    messages        :Message[] | any
+    server          :Server | any
+    privateMembers  :string[] | any
+}
+
 export interface Message {
     id              :number
     sender          :User
@@ -25,11 +34,9 @@ export interface Message {
     date            :Date
 }
 
-export interface Channel {
-    id              :number
-    name            :string
-    type            :"PUBLIC" | "PRIVATE" | "DM"
-    messages        :Message[]
-    server          :string
-    privateMembers  :string[]
+export interface MessageIO {
+    type: 'DM' | 'Server'
+    channelName: string
+    receiverName: string
+    msg: string
 }
