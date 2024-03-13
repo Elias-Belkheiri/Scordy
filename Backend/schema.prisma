@@ -66,7 +66,7 @@ model Message {
   date    DateTime
 
   sender  User     @relation(fields: [userId], references: [id])
-  Channel Channel  @relation(fields: [channelId], references: [id])
+  channel Channel  @relation(fields: [channelId], references: [id])
 
   userId    Int
   channelId Int

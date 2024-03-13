@@ -1,11 +1,27 @@
 import {Prisma, PrismaClient} from '@prisma/client'
-import {User, Server, Channel} from '../dtos'
+import {User, Server, Channel, Message} from '../dtos'
 import {BadRequest} from '../customExceptions'
 
 // Server Channel: /servername/, and a body with the channel name and type
 // DM Channel: dms/, and a body with the members
 
 const prisma = new PrismaClient();
+
+const getChannel = async (channelId: number) =>
+{
+    try
+    {
+        const channel = await prisma.channel.findUnique({where: {id: channelId}, include: {messages: true, privateMembers: true, server: true}});
+        if (!channel)
+            throw new BadRequest(`Channel ${channelId} doesn't exist`);
+        return channel;
+    }
+    catch (err)
+    {
+        throw err;
+    }
+
+}
 
 const addChannel = async (channel: Channel) =>
 {
@@ -81,3 +97,60 @@ const deleteServerChannel = async (channelName: string, serverName: string) =>
         throw err;
     }
 }
+
+const	updateChannelName = async (channel: Channel, newName: string) =>
+{
+	try
+	{
+		if (channel.type == 'PUBLIC' || channel.type == 'PRIVATE')
+		{
+			const server = await prisma.server.findUnique({where: {name: channel.server}, include: {channels: true}});
+			if (!server)
+				throw new BadRequest(`Server ${channel.server} doesn't exist`);
+			const serverChannels = (server.channels).filter(serverChannel => serverChannel.name == channel.name);
+			if (!serverChannels)
+				throw new BadRequest(`Channel ${channel.name} doesn't exist in ${channel.server}`);
+            const updatedChannel = await prisma.channel.update({where: {id: channel.id}, data: {name:newName}});
+            return updatedChannel;
+        }
+	}
+	catch (e)
+	{
+		throw e;
+	}
+}
+
+const addMessage = async (channel: Channel, message: Message) =>
+{
+    try
+    {
+        if (!channel || !message || !message.sender || !message.content)
+            throw new BadRequest(`Invalid Message Credentials`);
+
+        const sender = await prisma.user.findUnique({where: {userName: message.sender}});
+        if (!sender)
+            throw new BadRequest(`Sender ${message.sender} doesn't exist`);
+
+        if (channel.type == "DM" || channel.type == "PRIVATE")
+        {
+            const members = await prisma.channel.findUnique({where: {id: channel.id}, include: {privateMembers: true}});
+            if (!members || !(members.privateMembers.filter(member => member.userName == message.sender)))
+                throw new BadRequest(`Sender in not a member of this DM Channel`);
+        }
+        else if (channel.type == "PUBLIC")
+        {
+            const server = await prisma.server.findUnique({where: {name: channel.server}, include: {members: true}});
+            if (!server)
+                throw new BadRequest(`Server ${channel.server} doesn't exist`);
+            if (!(server.members.filter(member => member.userName == message.sender)))  
+                throw new BadRequest(`Sender in not a member of this Server`);
+        }
+        const messageCreated = await prisma.message.create({data: {content: message.content, sender: {connect: {userName: message.sender}}, channel: {connect: {id: channel.id}}, date: message.date}});
+        return messageCreated;
+    }
+    catch (e)
+    {
+        throw e;
+    }
+}
+

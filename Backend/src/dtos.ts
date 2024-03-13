@@ -21,16 +21,16 @@ export interface Channel {
     id              :number
     name            :string
     type            :"PUBLIC" | "PRIVATE" | "DM"
-    messages        :Message[] | any
-    server          :Server | any
+    messages        :string[] | any
+    server          :string | any
     privateMembers  :string[] | any
 }
 
 export interface Message {
     id              :number
-    sender          :User
+    sender          :string
     content         :string
-    Channel         :Channel
+    channel         :string
     date            :Date
 }
 
