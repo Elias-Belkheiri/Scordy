@@ -30,13 +30,6 @@ export interface Message {
     id              :number
     sender          :string
     content         :string
-    channel         :string
+    channel         :number
     date            :Date
-}
-
-export interface MessageIO {
-    type: 'DM' | 'Server'
-    channelName: string
-    receiverName: string
-    msg: string
 }

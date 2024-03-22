@@ -7,7 +7,7 @@ import {BadRequest} from '../customExceptions'
 
 const prisma = new PrismaClient();
 
-const getChannel = async (channelId: number) =>
+export const getChannel = async (channelId: number) =>
 {
     try
     {
@@ -23,7 +23,7 @@ const getChannel = async (channelId: number) =>
 
 }
 
-const addChannel = async (channel: Channel) =>
+export const addChannel = async (channel: Channel) =>
 {
     if (!channel.name || !channel.type || (!channel.server && channel.type != "DM"))
         throw new BadRequest(`Invalid Channel Credentials`);
@@ -77,7 +77,7 @@ const addChannel = async (channel: Channel) =>
     }
 }
 
-const deleteServerChannel = async (channelName: string, serverName: string) =>
+export const deleteServerChannel = async (channelName: string, serverName: string) =>
 {
     try
     {
@@ -98,7 +98,7 @@ const deleteServerChannel = async (channelName: string, serverName: string) =>
     }
 }
 
-const	updateChannelName = async (channel: Channel, newName: string) =>
+export const	updateChannelName = async (channel: Channel, newName: string) =>
 {
 	try
 	{
@@ -120,7 +120,7 @@ const	updateChannelName = async (channel: Channel, newName: string) =>
 	}
 }
 
-const addMessage = async (channel: Channel, message: Message) =>
+export const addMessage = async (channel: Channel, message: Message) =>
 {
     try
     {
