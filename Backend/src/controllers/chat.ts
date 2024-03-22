@@ -4,6 +4,7 @@ import {Channel, Message} from '../dtos'
 import {addMessage} from '../services/channelService'
 import { WebSocketServer } from 'ws';
 import * as UserService from '../services/userService'
+import * as MessageService from '../services/messageService'
 
 const router = express.Router();
 const wss = new WebSocketServer({ port: 8080 });
@@ -47,7 +48,10 @@ wss.on('connection', (ws) => {
                 if (user.readyState !== user.OPEN)
                     channels[message.channel].delete(user);
                 else if (user !== ws)
+                {
                     user.send(JSON.stringify(message));
+                    await MessageService.addMessage(message);
+                }
             }
         }
         catch (e)
