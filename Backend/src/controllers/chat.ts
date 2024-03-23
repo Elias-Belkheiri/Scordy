@@ -29,40 +29,44 @@ const addUserChannels = (sender: any, message: Message, ws: any) =>
 }
 
 wss.on('connection', (ws) => {
+    console.log('new connection');
     ws.on('message', async (msg) => {
-        try
-        {
-            const message: Message = JSON.parse(msg.toString());
-            const sender = await UserService.getUser(message.sender);
-            if (!sender)
-                throw new BadRequest(`Sender ${message.sender} doesn't exist`);
-            if (!users.has(ws))
-            {
-                addUserChannels(sender, message, ws);
-                users.add(ws);
-            }
-            if (!channels[message.channel])
-                throw new BadRequest(`Channel ${message.channel} doesn't exist`);
-            for (const user of channels[message.channel])
-            {
-                if (user.readyState !== user.OPEN)
-                    channels[message.channel].delete(user);
-                else if (user !== ws)
-                {
-                    user.send(JSON.stringify(message));
-                    await MessageService.addMessage(message);
-                }
-            }
-        }
-        catch (e)
-        {
-            ws.send(JSON.stringify({error: e.message}));
-            ws.close();
-            users.delete(ws);
-        }
+        console.log(`msg: ${msg}`);
+        // try
+        // {
+        //     console.log(msg);
+        //     const message: Message = JSON.parse(msg.toString());
+        //     const sender = await UserService.getUser(message.sender);
+        //     if (!sender)
+        //         throw new BadRequest(`Sender ${message.sender} doesn't exist`);
+        //     if (!users.has(ws))
+        //     {
+        //         addUserChannels(sender, message, ws);
+        //         users.add(ws);
+        //     }
+        //     if (!channels[message.channel])
+        //         throw new BadRequest(`Channel ${message.channel} doesn't exist`);
+        //     for (const user of channels[message.channel])
+        //     {
+        //         if (user.readyState !== user.OPEN)
+        //             channels[message.channel].delete(user);
+        //         else if (user !== ws)
+        //         {
+        //             user.send(JSON.stringify(message));
+        //             await MessageService.addMessage(message);
+        //         }
+        //     }
+        // }
+        // catch (e)
+        // {
+        //     ws.send(JSON.stringify({error: e.message}));
+        //     ws.close();
+        //     users.delete(ws);
+        // }
     });
+    
     ws.on('close', () => {
+        console.log('connection closed');
         users.delete(ws);
     })
-    ws.send('something');
 });

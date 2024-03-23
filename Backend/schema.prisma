@@ -57,7 +57,7 @@ model Channel {
 
   privateMembers User[] @relation("PrivateChannels")
 
-  serverId Int
+  serverId Int?
 }
 
 model Message {

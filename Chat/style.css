@@ -1,0 +1,17 @@
+body {
+    font-family: sans-serif;
+  }
+  
+  #chat-container {
+    border: 1px solid #ddd;
+    padding: 10px;
+    height: 300px; /* Adjust height as needed */
+    overflow-y: scroll; /* Enable scrolling for long chats */
+  }
+  
+  #message-input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  

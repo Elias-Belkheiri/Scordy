@@ -36,7 +36,8 @@ export const getUser = async (userName: string) =>
     try
     {
         const user = await prisma.user.findUnique({where: {userName}, include: {privateChannels: true ,servers: {include: {channels: true}}}});
-        return {...user, password: undefined};
+        // return {...user, password: undefined};
+        return user;
     }
     catch (exc)
     {

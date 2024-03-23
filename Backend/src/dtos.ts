@@ -6,7 +6,7 @@ export interface User
     userName    :string
     email       :string
     password    :string
-    avatar      :string
+    avatar      :string | any
     servers     :Server[] | any
 }
 
